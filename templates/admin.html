@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block content %}
+<nav class="navbar navbar-light bg-light navbar-expand-lg">
+    <div class="container-fluid">
+    <span class="navbar-brand">Admin Page</span>
+        <span class="navbar-text">Hello, {{current_user.first_name}} {{current_user.last_name}}</span>
+        <form class="d-flex" action="/api/logout" method="post">
+            <button type="submit" class="btn btn-primary">Logout</button>
+        </form>
+    </div>
+</nav>
+<main class="p-4">
+    <ul class="nav nav-tabs ml-3" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#users" type="button"
+                role="tab" aria-controls="users" aria-selected="true">Users</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#add_user" type="button"
+                role="tab" aria-controls="add_user" aria-selected="false">Add User</button>
+        </li>
+        <!-- <li class="nav-item" role="presentation">
+        <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#contact" type="button"
+            role="tab" aria-controls="contact" aria-selected="false">Contact</button>
+    </li> -->
+    </ul>
+    <div class="tab-content" id="myTabContent">
+        <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                  <tr>
+                    <th scope="row">{{user.id}}</th>
+                    <td>{{user.first_name}}</td>
+                    <td>{{user.last_name}}</td>
+                    <td>{{user.email}}</td>
+                    <td>{{user.role.name}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+        </div>
+
+
+
+
+        <div class="tab-pane fade m-4 mx-auto w-75" id="add_user" role="tabpanel" aria-labelledby="add-tab">
+            <form action="/api/user/add" method="post">
+                <div class="form-group row m-3">
+                    <label for="first_name" class="col-form-label col-sm-2">First Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="first_name" class="form-control" id="first_name"
+                            aria-describedby="first_name" required>
+                    </div>
+                </div>
+                <div class="form-group row m-3">
+                    <label for="last_name" class="col-form-label col-sm-2">Last Name</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="last_name" class="form-control" id="last_name"
+                            aria-describedby="last_name" required>
+                    </div>
+                </div>
+                <div class="form-group row m-3">
+                    <label for="email" class="col-form-label col-sm-2">Email address</label>
+                    <div class="col-sm-10">
+                        <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+                    </div>
+                </div>
+                <!-- <div class="form-group row m-3">
+                    <label for="password" class="col-form-label col-sm-2">Password</label>
+                    <div class="col-sm-10">
+                        <input type="text" name="password" class="form-control" id="password" required>
+                    </div>
+                </div> -->
+                <div class="form-group row m-3">
+                    <label for="role" class="col-form-label col-sm-2">Role</label>
+                    <div class="col-sm-10">
+                        <select name="role" class="form-select" id="role">
+                            <option value="admin">ADMIN</option>
+                            <option value="doctor">DOCTOR</option>
+                            <option value="nurse">NURSE</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="container d-flex align-items-center justify-content-center">
+                    <input type="reset" class="btn" value="Reset">
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                </div>
+            </form>
+        </div>
+        <!-- <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div> -->
+    </div>
+</main>
+{% endblock content %}

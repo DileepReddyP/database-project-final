@@ -16,16 +16,14 @@ class Role(Enum):
 class User(UserMixin, db.Model):
     "user model with flask-login mixin added"
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column(
-        db.String(50),
-    )
+    first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
     email = db.Column(db.String(50), unique=True)
     password = db.Column(db.String(100))
     role = db.Column(db.Enum(Role))
 
     def __repr__(self) -> str:
-        return "name: {self.first_name}"
+        return f"name: {self.first_name}"
 
 
 class Patient(db.Model):
@@ -74,29 +72,43 @@ class TestType(Enum):
     RADIOLOGY = "radiology"
 
 
-class Test(db.Model):
-    "test model"
-    id = db.Column(db.Integer, primary_key=True)
+# class Test(db.Model):
+#     "test model"
+#     id = db.Column(db.Integer, primary_key=True)
+#     name = db.Column(db.String(50))
+#     role = db.Column(db.Enum(TestType))
+
+
+# class TestReport(db.Model):
+#     "test report model"
+#     id = db.Column(db.Integer, primary_key=True)
+#     test_id = db.Column(db.Integer, db.ForeignKey("test.id"), nullable=False)
+#     test = db.relationship("Test", backref=db.backref("test_reports"))
+#     patient_id = db.Column(db.Integer, db.ForeignKey("patient.id"), nullable=False)
+#     patient = db.relationship("Patient", backref=db.backref("test_reports"))
+#     comment = db.Column(db.String(2048))
+#     date = db.Column(db.DateTime)
+
+med_pres = db.Table(
+    "med_pres",
+    db.Column("medication_ndc", db.String(20), db.ForeignKey("medication.ndc")),
+    db.Column("prescription_id", db.Integer, db.ForeignKey("prescription.id")),
+)
+
+
+class Medication(db.Model):
+    "Medications Model"
+    ndc = db.Column(db.String(20), primary_key=True)
     name = db.Column(db.String(50))
-    role = db.Column(db.Enum(TestType))
-
-
-class TestReport(db.Model):
-    "test report model"
-    id = db.Column(db.Integer, primary_key=True)
-    test_id = db.Column(db.Integer, db.ForeignKey("test.id"), nullable=False)
-    test = db.relationship("Test", backref=db.backref("test_reports"))
-    patient_id = db.Column(db.Integer, db.ForeignKey("patient.id"), nullable=False)
-    patient = db.relationship("Patient", backref=db.backref("test_reports"))
-    comment = db.Column(db.String(2048))
-    date = db.Column(db.DateTime)
 
 
 class Prescription(db.Model):
     "prescription model"
     id = db.Column(db.Integer, primary_key=True)
-    medications = db.Column(db.ARRAY(db.String(20)))
     patient_id = db.Column(db.Integer, db.ForeignKey("patient.id"))
     patient = db.relationship("Patient", backref=db.backref("prescriptions"))
     doctor_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     doctor = db.relationship("User", backref=db.backref("prescriptions"))
+    medications = db.relationship(
+        "Medication", secondary=med_pres, backref="prescriptions"
+    )
