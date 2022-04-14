@@ -2,7 +2,7 @@ from datetime import datetime
 from flask import Blueprint, redirect, render_template
 from flask_login import current_user, login_required
 
-from server.models import Appointment, Patient, Role, User
+from server.models import Appointment, Medication, Patient, Role, User
 
 pages = Blueprint("pages", __name__, template_folder="templates")
 
@@ -59,10 +59,28 @@ def doctor_home_page():
         emergencies = filter(lambda x: x.emergency, not_completed)
         non_emergencies = filter(lambda x: not x.emergency, not_completed)
         return render_template(
-            "nurse_home.html",
+            "doctor_home.html",
             completed=completed,
             emergencies=emergencies,
             non_emergencies=non_emergencies,
+            user_id=current_user.id,
+        )
+    return redirect("/")
+
+
+@pages.route("/doctor/appointment/<appointment_id>")
+@login_required
+def doctor_appointment_page(appointment_id):
+    "hmr page"
+    if current_user.role == Role.DOCTOR:
+        appointment = Appointment.query.filter_by(id=appointment_id).first()
+        medications = Medication.query.all()
+        patient = appointment.patient
+        return render_template(
+            "appointment.html",
+            medications=medications,
+            patient=patient,
+            appointment_id=appointment_id,
             user_id=current_user.id,
         )
     return redirect("/")

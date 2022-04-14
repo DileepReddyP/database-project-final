@@ -4,7 +4,7 @@ from time import strptime, strftime
 from flask import Blueprint, redirect, request, flash, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
-from server.models import Appointment, Patient, User, db, Role
+from server.models import Appointment, Medication, Patient, Prescription, Report, User, db, Role
 
 api = Blueprint("api", __name__)
 
@@ -101,6 +101,32 @@ def appt_add_api():
     db.session.add(appt)
     db.session.commit()
     return redirect(request.referrer)
+
+@api.route("/api/report/<appointment_id>", methods=["POST"])
+@login_required
+def report_api(appointment_id):
+    "user addition"
+    # pylint: disable=no-member
+    db.session.begin()
+    print(request.form, appointment_id, flush=True)
+    appt = Appointment.query.filter_by(id=appointment_id).first()
+    appt.completed = True
+    report = Report(
+        patient_id=appt.patient.id,
+        doctor_id=appt.doctor.id,
+        comment=request.form.get("comment"),
+        appointment_id=appointment_id
+    )
+    prescription = Prescription(
+        patient_id=appt.patient.id,
+        doctor_id=appt.doctor.id,
+    )
+    for med_ndc in request.form.getlist("medications"):
+        med = Medication.query.filter_by(ndc=med_ndc).first()
+        prescription.medications.append(med)
+    report.prescription = prescription
+    db.session.commit()
+    return redirect(url_for("pages.doctor_home_page"))
 
 
 @api.route("/api/logout", methods=["POST"])

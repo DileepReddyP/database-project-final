@@ -65,11 +65,11 @@ class Report(db.Model):
     prescription = db.relationship("Prescription", backref=db.backref("report"))
 
 
-class TestType(Enum):
-    "test type enum"
-    CONSULTING_ROOM = "consulting room"
-    LABORATORY = "laboratory"
-    RADIOLOGY = "radiology"
+# class TestType(Enum):
+#     "test type enum"
+#     CONSULTING_ROOM = "consulting room"
+#     LABORATORY = "laboratory"
+#     RADIOLOGY = "radiology"
 
 
 # class Test(db.Model):

@@ -66,7 +66,7 @@
                                         <th scope="col">ID</th>
                                         <th scope="col">Patient</th>
                                         <th scope="col">Date</th>
-                                        <th scope="col"></th>
+                                        <th scope="col">Go to Appt.</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -74,9 +74,8 @@
                                     <tr>
                                         <th scope="row">{{appointment.id}}</th>
                                         <td>{{appointment.patient.first_name}} {{appointment.patient.last_name}}</td>
-                                        <td>{{appointment.doctor.first_name}} {{appointment.doctor.last_name}}</td>
                                         <td>{{appointment.date}}</td>
-                                        <td><a href="/appointment/{{appointment.id}}" class="btn btn-primary"></a></td>
+                                        <td><a href="/doctor/appointment/{{appointment.id}}" class="btn btn-primary">Go -></a></td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
