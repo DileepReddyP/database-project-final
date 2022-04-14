@@ -18,10 +18,18 @@
         <span class="navbar-brand">Hospital EMR</span>
         <span class="navbar-text">Hello, {{current_user.first_name}} {{current_user.last_name}}</span>
         <form class="d-flex" action="/api/logout" method="post">
-            <button type="submit" class="btn btn-primary">Logout</button>
+            <button type="submit" class="btn btn-danger">Logout</button>
         </form>
     </div>
 </nav>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-danger m-4" role="alert">
+    {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
 
 <main class="p-4">
     <ul class="nav nav-tabs ml-3" id="myTab" role="tablist">
@@ -38,34 +46,119 @@
                 role="tab" aria-controls="add_appt" aria-selected="false">Create Appointment</button>
         </li>
         <li class="nav-item" role="presentation">
-            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#change_password" type="button"
-                role="tab" aria-controls="change_password" aria-selected="false">Change Password</button>
+            <button class="nav-link" id="contact-tab" data-bs-toggle="tab" data-bs-target="#change_password"
+                type="button" role="tab" aria-controls="change_password" aria-selected="false">Change Password</button>
         </li>
     </ul>
+
+
+
     <div class="tab-content" id="myTabContent">
-        <div class="tab-pane fade show active" id="appts" role="tabpanel" aria-labelledby="appointments-tab">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">First Name</th>
-                        <th scope="col">Last Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for patient in patients %}
-                    <tr>
-                        <th scope="row">{{user.id}}</th>
-                        <td>{{user.first_name}}</td>
-                        <td>{{user.last_name}}</td>
-                        <td>{{user.email}}</td>
-                        <td>{{user.role.name}}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+        <div class="tab-pane fade show active p-4" id="appts" role="tabpanel" aria-labelledby="appointments-tab">
+            <div class="accordion" id="accordionPanelsStayOpenExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                            aria-controls="panelsStayOpen-collapseOne">
+                            Emergencies
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show"
+                        aria-labelledby="panelsStayOpen-headingOne">
+                        <div class="accordion-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Patient</th>
+                                        <th scope="col">Doctor</th>
+                                        <th scope="col">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in emergencies %}
+                                    <tr>
+                                        <th scope="row">{{appointment.id}}</th>
+                                        <td>{{appointment.patient.first_name}} {{appointment.patient.last_name}}</td>
+                                        <td>{{appointment.doctor.first_name}} {{appointment.doctor.last_name}}</td>
+                                        <td>{{appointment.date}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="true"
+                            aria-controls="panelsStayOpen-collapseTwo">
+                            Non Emergencies
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseTwo" class="accordion-collapse"
+                        aria-labelledby="panelsStayOpen-headingTwo">
+                        <div class="accordion-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Patient</th>
+                                        <th scope="col">Doctor</th>
+                                        <th scope="col">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in non_emergencies %}
+                                    <tr>
+                                        <th scope="row">{{appointment.id}}</th>
+                                        <td>{{appointment.patient.first_name}} {{appointment.patient.last_name}}</td>
+                                        <td>{{appointment.doctor.first_name}} {{appointment.doctor.last_name}}</td>
+                                        <td>{{appointment.date}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                            aria-controls="panelsStayOpen-collapseThree">
+                            Completed
+                        </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+                        aria-labelledby="panelsStayOpen-headingThree">
+                        <div class="accordion-body">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ID</th>
+                                        <th scope="col">Patient</th>
+                                        <th scope="col">Doctor</th>
+                                        <th scope="col">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for appointment in completed %}
+                                    <tr>
+                                        <th scope="row">{{appointment.id}}</th>
+                                        <td>{{appointment.patient.first_name}} {{appointment.patient.last_name}}</td>
+                                        <td>{{appointment.doctor.first_name}} {{appointment.doctor.last_name}}</td>
+                                        <td>{{appointment.date}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -90,7 +183,7 @@
                 <div class="form-group row m-3">
                     <label for="date_of_birth" class="col-form-label col-sm-2">Date of Birth</label>
                     <div class="col-sm-10">
-                        <input type="text" name="date_of_birth" class="form-control" id="date_of_birth" required>
+                        <input type="date" name="date_of_birth" class="form-control" id="date_of_birth" required>
                     </div>
                 </div>
                 <div class="form-group row m-3">
@@ -100,7 +193,7 @@
                     </div>
                 </div>
                 <div class="form-group row m-3">
-                    <label for="govt_id" class="col-form-label col-sm-2">Insurance Number</label>
+                    <label for="govt_id" class="col-form-label col-sm-2">Government ID</label>
                     <div class="col-sm-10">
                         <input type="text" name="govt_id" class="form-control" id="govt_id" required>
                     </div>
@@ -122,96 +215,73 @@
 
 
         <div class="tab-pane fade m-4 mx-auto w-75" id="add_appt" role="tabpanel" aria-labelledby="create-appointment">
-            <form action="/api/user/add" method="post">
+            <form action="/api/appt/add" method="post">
                 <div class="form-group row m-3">
-                    <label for="first_name" class="col-form-label col-sm-2">First Name</label>
+                    <label for="date" class="col-form-label col-sm-2">Date and Time</label>
                     <div class="col-sm-10">
-                        <input type="text" name="first_name" class="form-control" id="first_name"
-                            aria-describedby="first_name" required>
+                        <input type="datetime-local" name="date" value="{{today}}" class="form-control" id="date" required>
                     </div>
                 </div>
+
                 <div class="form-group row m-3">
-                    <label for="last_name" class="col-form-label col-sm-2">Last Name</label>
+                    <label for="patient" class="col-form-label col-sm-2">Patient</label>
                     <div class="col-sm-10">
-                        <input type="text" name="last_name" class="form-control" id="last_name"
-                            aria-describedby="last_name" required>
-                    </div>
-                </div>
-                <div class="form-group row m-3">
-                    <label for="email" class="col-form-label col-sm-2">Email address</label>
-                    <div class="col-sm-10">
-                        <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp"
-                            required>
-                    </div>
-                </div>
-                <div class="form-group row m-3">
-                    <label for="password" class="col-form-label col-sm-2">Password</label>
-                    <div class="col-sm-10">
-                        <input type="text" name="password" class="form-control" id="password" required>
-                    </div>
-                </div>
-                <div class="form-group row m-3">
-                    <label for="role" class="col-form-label col-sm-2">Role</label>
-                    <div class="col-sm-10">
-                        <select name="role" class="form-select" id="role">
-                            <option value="admin">ADMIN</option>
-                            <option value="doctor">DOCTOR</option>
-                            <option value="nurse">NURSE</option>
+                        <select name="patient" class="form-select" id="patient">
+                            {% for patient in patients %}
+                            <option value="{{patient.id}}">{{patient.first_name}} {{patient.last_name}}</option>
+                            {% endfor %}
                         </select>
+                    </div>
+                </div>
+
+                <div class="form-group row m-3">
+                    <label for="doctor" class="col-form-label col-sm-2">Doctor</label>
+                    <div class="col-sm-10">
+                        <select name="doctor" class="form-select" id="doctor">
+                            {% for doctor in doctors %}
+                            <option value="{{doctor.id}}">{{doctor.first_name}} {{doctor.last_name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="container d-flex align-items-center justify-content-center m-4">
+                    <div class="form-check">
+                        <label class="form-check-label" for="emergency">
+                            Emergency
+                        </label>
+                        <input name="emergency" class="form-check-input" type="checkbox" value="" id="emergency">
                     </div>
                 </div>
 
                 <div class="container d-flex align-items-center justify-content-center">
                     <input type="reset" class="btn" value="Reset">
-                    <button type="submit" class="btn btn-primary">Create User</button>
+                    <button type="submit" class="btn btn-primary">Create Appointment</button>
                 </div>
             </form>
         </div>
 
 
-        <div class="tab-pane fade m-4 mx-auto w-75" id="change_password" role="tabpanel" aria-labelledby="change-password">
-            <form action="/api/user/add" method="post">
+        <div class="tab-pane fade m-4 mx-auto w-75" id="change_password" role="tabpanel"
+            aria-labelledby="change-password">
+            <form action="/api/password/{{user_id}}" method="post">
                 <div class="form-group row m-3">
-                    <label for="first_name" class="col-form-label col-sm-2">First Name</label>
+                    <label for="password" class="col-form-label col-sm-2">New Password</label>
                     <div class="col-sm-10">
-                        <input type="text" name="first_name" class="form-control" id="first_name"
-                            aria-describedby="first_name" required>
+                        <input type="password" name="password" class="form-control" id="password"
+                            aria-describedby="new_password" required>
                     </div>
                 </div>
                 <div class="form-group row m-3">
-                    <label for="last_name" class="col-form-label col-sm-2">Last Name</label>
+                    <label for="confirm" class="col-form-label col-sm-2">Confirm Password</label>
                     <div class="col-sm-10">
-                        <input type="text" name="last_name" class="form-control" id="last_name"
-                            aria-describedby="last_name" required>
-                    </div>
-                </div>
-                <div class="form-group row m-3">
-                    <label for="email" class="col-form-label col-sm-2">Email address</label>
-                    <div class="col-sm-10">
-                        <input type="email" name="email" class="form-control" id="email" aria-describedby="emailHelp"
-                            required>
-                    </div>
-                </div>
-                <div class="form-group row m-3">
-                    <label for="password" class="col-form-label col-sm-2">Password</label>
-                    <div class="col-sm-10">
-                        <input type="text" name="password" class="form-control" id="password" required>
-                    </div>
-                </div>
-                <div class="form-group row m-3">
-                    <label for="role" class="col-form-label col-sm-2">Role</label>
-                    <div class="col-sm-10">
-                        <select name="role" class="form-select" id="role">
-                            <option value="admin">ADMIN</option>
-                            <option value="doctor">DOCTOR</option>
-                            <option value="nurse">NURSE</option>
-                        </select>
+                        <input type="password" name="confirm" class="form-control" id="confirm"
+                            aria-describedby="confirm" required>
                     </div>
                 </div>
 
                 <div class="container d-flex align-items-center justify-content-center">
                     <input type="reset" class="btn" value="Reset">
-                    <button type="submit" class="btn btn-primary">Create User</button>
+                    <button type="submit" class="btn btn-primary">Change Password</button>
                 </div>
             </form>
         </div>

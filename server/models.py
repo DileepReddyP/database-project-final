@@ -32,7 +32,7 @@ class Patient(db.Model):
     first_name = db.Column(db.String(50))
     last_name = db.Column(db.String(50))
     insurance_number = db.Column(db.String(50))
-    date_of_birth = db.Column(db.DateTime)
+    date_of_birth = db.Column(db.Date)
     govt_id = db.Column(db.String(50))
     email = db.Column(db.String(100))
 
