@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block content %}
+
+<nav class="navbar navbar-light bg-light navbar-expand-lg">
+    <div class="container-fluid">
+        <span class="navbar-brand">Hospital EMR</span>
+        <span class="navbar-text">Hello, {{current_user.first_name}} {{current_user.last_name}}</span>
+        <form class="d-flex" action="/api/logout" method="post">
+            <button type="submit" class="btn btn-danger">Logout</button>
+        </form>
+    </div>
+</nav>
+
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div class="alert alert-danger m-4" role="alert">
+    {{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
+
+<main class="container align-items-center justify-content-center">
+
+    <form action="/api/patient/{{patient.id}}" method="post">
+        <div class="form-group row m-3">
+            <label for="first_name" class="col-form-label col-sm-2">First Name</label>
+            <div class="col-sm-10">
+                <input type="text" value="{{patient.first_name}}" name="first_name" class="form-control" id="first_name" aria-describedby="first_name"
+                    required>
+            </div>
+        </div>
+        <div class="form-group row m-3">
+            <label for="last_name" class="col-form-label col-sm-2">Last Name</label>
+            <div class="col-sm-10">
+                <input type="text" value="{{patient.last_name}}" name="last_name" class="form-control" id="last_name" aria-describedby="last_name"
+                    required>
+            </div>
+        </div>
+        <div class="form-group row m-3">
+            <label for="date_of_birth" class="col-form-label col-sm-2">Date of Birth</label>
+            <div class="col-sm-10">
+                <input type="date" value="{{patient.date_of_birth}}" name="date_of_birth" class="form-control" id="date_of_birth" required>
+            </div>
+        </div>
+        <div class="form-group row m-3">
+            <label for="insurance_number" class="col-form-label col-sm-2">Insurance Number</label>
+            <div class="col-sm-10">
+                <input type="text" value="{{patient.insurance_number}}" name="insurance_number" class="form-control" id="insurance_number" required>
+            </div>
+        </div>
+        <div class="form-group row m-3">
+            <label for="govt_id" class="col-form-label col-sm-2">Government ID</label>
+            <div class="col-sm-10">
+                <input type="text" value="{{patient.govt_id}}" name="govt_id" class="form-control" id="govt_id" required>
+            </div>
+        </div>
+        <div class="form-group row m-3">
+            <label for="email" class="col-form-label col-sm-2">Email address</label>
+            <div class="col-sm-10">
+                <input type="email" value="{{patient.email}}" name="email" class="form-control" id="email" aria-describedby="emailHelp" required>
+            </div>
+        </div>
+
+        <div class="container d-flex align-items-center justify-content-center">
+            <input type="reset" class="btn" value="Reset">
+            <button type="submit" class="btn btn-primary">Edit Patient</button>
+        </div>
+    </form>
+
+</main>
+{% endblock content %}

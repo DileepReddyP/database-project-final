@@ -1,6 +1,5 @@
 import random
 import string
-from time import strptime, strftime
 from flask import Blueprint, redirect, request, flash, url_for
 from flask_login import current_user, login_required, login_user, logout_user
 
@@ -35,12 +34,12 @@ def login_api():
 def password_change_api(user_id):
     "password change"
     # pylint: disable=no-member
-    pw = request.form.get("password")
+    pwd = request.form.get("password")
     cpw = request.form.get("confirm")
-    if pw == cpw:
+    if pwd == cpw:
         db.session.begin()
         user = User.query.filter_by(id=user_id).first()
-        user.password = pw
+        user.password = pwd
         db.session.commit()
         return redirect(request.referrer)
     flash("Passwords did not match")
@@ -85,6 +84,37 @@ def patient_add_api():
     db.session.commit()
     return redirect(request.referrer)
 
+@api.route("/api/patient/<patient_id>", methods=["POST"])
+@login_required
+def patient_edit_api(patient_id):
+    "patient addition"
+    # pylint: disable=no-member
+    db.session.begin()
+    patient = Patient.query.filter_by(id=patient_id).first()
+    patient.first_name=request.form.get("first_name")
+    patient.last_name=request.form.get("last_name")
+    patient.email=request.form.get("email")
+    patient.date_of_birth=request.form.get("date_of_birth")
+    patient.insurance_number=request.form.get("insurance_number")
+    patient.govt_id=request.form.get("govt_id")
+    print(patient, flush=True)
+    db.session.commit()
+    return redirect(url_for("pages.health_home_page"))
+
+@api.route("/api/user/<user_id>", methods=["POST"])
+@login_required
+def user_edit_api(user_id):
+    "user edit"
+    # pylint: disable=no-member
+    db.session.begin()
+    user = User.query.filter_by(id=user_id).first()
+    user.first_name=request.form.get("first_name")
+    user.last_name=request.form.get("last_name")
+    user.email=request.form.get("email")
+    user.password=request.form.get("password")
+    user.role=request.form.get("role").upper()
+    db.session.commit()
+    return redirect(url_for("pages.admin_page"))
 
 @api.route("/api/appt/add", methods=["POST"])
 @login_required

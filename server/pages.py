@@ -43,7 +43,6 @@ def health_home_page():
             patients=patients,
             doctors=doctors,
             today=datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-            user_id=current_user.id,
         )
     return redirect("/")
 
@@ -63,7 +62,6 @@ def doctor_home_page():
             completed=completed,
             emergencies=emergencies,
             non_emergencies=non_emergencies,
-            user_id=current_user.id,
         )
     return redirect("/")
 
@@ -81,6 +79,30 @@ def doctor_appointment_page(appointment_id):
             medications=medications,
             patient=patient,
             appointment_id=appointment_id,
-            user_id=current_user.id,
+        )
+    return redirect("/")
+
+
+@pages.route("/edit/patient/<patient_id>")
+@login_required
+def patient_edit_page(patient_id):
+    "edit page"
+    if current_user.role == Role.NURSE:
+        patient = Patient.query.filter_by(id=patient_id).first()
+        return render_template(
+            "edit_patient.html",
+            patient=patient,
+        )
+    return redirect("/")
+
+@pages.route("/edit/user/<user_id>")
+@login_required
+def user_edit_page(user_id):
+    "edit page"
+    if current_user.role == Role.ADMIN:
+        user = User.query.filter_by(id=user_id).first()
+        return render_template(
+            "edit_user.html",
+            user=user,
         )
     return redirect("/")

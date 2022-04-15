@@ -38,6 +38,10 @@
                 role="tab" aria-controls="appts" aria-selected="true">Appointments</button>
         </li>
         <li class="nav-item" role="presentation">
+            <button class="nav-link" id="appt-tab" data-bs-toggle="tab" data-bs-target="#patients" type="button"
+                role="tab" aria-controls="patients" aria-selected="false">Patients</button>
+        </li>
+        <li class="nav-item" role="presentation">
             <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#add_patient" type="button"
                 role="tab" aria-controls="add_patient" aria-selected="false">Add Patient</button>
         </li>
@@ -219,7 +223,8 @@
                 <div class="form-group row m-3">
                     <label for="date" class="col-form-label col-sm-2">Date and Time</label>
                     <div class="col-sm-10">
-                        <input type="datetime-local" name="date" value="{{today}}" class="form-control" id="date" required>
+                        <input type="datetime-local" name="date" value="{{today}}" class="form-control" id="date"
+                            required>
                     </div>
                 </div>
 
@@ -260,10 +265,39 @@
             </form>
         </div>
 
+        <div class="tab-pane fade m-4 mx-auto w-75" id="patients" role="tabpanel" aria-labelledby="patients">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Insurance Number</th>
+                        <th scope="col">Government ID</th>
+                        <th scope="col">Date of Birth</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for patient in patients %}
+                    <tr>
+                        <th scope="row">{{patient.id}}</th>
+                        <td>{{patient.first_name}} {{patient.last_name}}</td>
+                        <td>{{patient.insurance_number}}</td>
+                        <td>{{patient.govt_id}}</td>
+                        <td>{{patient.date_of_birth}}</td>
+                        <td>{{patient.email}}</td>
+                        <td><a class="btn btn-warning" href="/edit/patient/{{patient.id}}">Edit</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
 
         <div class="tab-pane fade m-4 mx-auto w-75" id="change_password" role="tabpanel"
             aria-labelledby="change-password">
-            <form action="/api/password/{{user_id}}" method="post">
+            <form action="/api/password/{{current_user.id}}" method="post">
                 <div class="form-group row m-3">
                     <label for="password" class="col-form-label col-sm-2">New Password</label>
                     <div class="col-sm-10">
