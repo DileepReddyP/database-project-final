@@ -2,7 +2,7 @@
 {% block content %}
 <nav class="navbar navbar-light bg-light navbar-expand-lg">
     <div class="container-fluid">
-        <span class="navbar-brand"><a href="/doctor/home">&lt; Hospital EMR</a></span>
+        <span class="navbar-brand"><a href="/doctor/home">&lt; Hospital EHR</a></span>
         <span class="navbar-text">Hello, {{current_user.first_name}} {{current_user.last_name}}</span>
         <form class="d-flex" action="/api/logout" method="post">
             <button type="submit" class="btn btn-danger">Logout</button>

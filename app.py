@@ -49,15 +49,15 @@ def load_user(user_id):
     return db.session.get(User, user_id)
 
 
-# @app.errorhandler(Exception)
-# def handle_error(error):
-#     "error handler"
-#     code = 500
-#     if isinstance(error, HTTPException):
-#         code = error.code
-#         if code == 404:
-#             return redirect("/"), 404
-#     return redirect("/"), code
+@app.errorhandler(Exception)
+def handle_error(error):
+    "error handler"
+    code = 500
+    if isinstance(error, HTTPException):
+        code = error.code
+        if code == 404:
+            return redirect("/"), 404
+    return redirect("/"), code
 
 
 db.init_app(app)
@@ -66,7 +66,7 @@ mail.init_app(app)
 with app.app_context():
     db.create_all()
 
-# app.run(debug=True)
+app.run(debug=True)
 
 # # pylint: disable=unused-argument
 # @app.teardown_appcontext

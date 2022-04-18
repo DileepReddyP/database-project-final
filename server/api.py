@@ -85,7 +85,7 @@ def user_add_api():
         first_name=request.form.get("first_name"),
         last_name=request.form.get("last_name"),
         role=request.form.get("role").upper(),
-        url="http://127.0.0.1:5000/"
+        url="https://database-project-dreddy2.herokuapp.com/"
     )
     mail.send(msg)
     return redirect("/admin")
@@ -151,13 +151,30 @@ def appt_add_api():
     "user addition"
     # pylint: disable=no-member
     db.session.begin()
+    patient_id = int(request.form.get("patient"))
+    doctor_id = int(request.form.get("doctor"))
+    date = request.form.get("date").replace("T", " ")
     appt = Appointment(
-        patient_id=request.form.get("patient"),
-        doctor_id=request.form.get("doctor"),
-        date=request.form.get("date").replace("T", " "),
+        patient_id=patient_id,
+        doctor_id=doctor_id,
+        date=date,
         emergency=request.form.get("emergency") is not None,
     )
     db.session.add(appt)
+    patient = Patient.query.filter_by(id=patient_id).first()
+    doctor = User.query.filter_by(id=doctor_id).first()
+    msg = Message(
+        subject="Model Hospital - Appointment Schedule",
+        sender="appointment@modelhospital.com",
+        recipients=[patient.email],
+    )
+    msg.html = render_template(
+        "email_patient.html",
+        doctor=doctor,
+        patient=patient,
+        time=date,
+    )
+    mail.send(msg)
     db.session.commit()
     return redirect(request.referrer)
 
