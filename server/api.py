@@ -1,11 +1,21 @@
 import random
 import string
-from flask import Blueprint, redirect, request, flash, url_for
+from flask import Blueprint, redirect, render_template, request, flash, url_for
 from flask_login import current_user, login_required, login_user, logout_user
-
-from server.models import Appointment, Medication, Patient, Prescription, Report, User, db, Role
+from flask_mail import Mail, Message
+from server.models import (
+    Appointment,
+    Medication,
+    Patient,
+    Prescription,
+    Report,
+    User,
+    db,
+    Role,
+)
 
 api = Blueprint("api", __name__)
+mail = Mail()
 
 
 @api.route("/api/login", methods=["POST"])
@@ -52,17 +62,33 @@ def user_add_api():
     "user addition"
     # pylint: disable=no-member
     db.session.begin()
+    password = "".join(random.choices(string.ascii_uppercase + string.digits, k=8))
     user = User(
         first_name=request.form.get("first_name"),
         last_name=request.form.get("last_name"),
         email=request.form.get("email"),
-        password="".join(random.choices(string.ascii_uppercase + string.digits, k=8)),
+        password=password,
         role=Role[request.form.get("role").upper()],
     )
     print(user, flush=True)
     db.session.add(user)
     db.session.commit()
-    return redirect(request.referrer)
+    msg = Message(
+        subject="Welcome to Model Hospital!",
+        sender="welcome@modelhospital.com",
+        recipients=[request.form.get("email")],
+    )
+    msg.html = render_template(
+        "email.html",
+        email=request.form.get("email"),
+        password=password,
+        first_name=request.form.get("first_name"),
+        last_name=request.form.get("last_name"),
+        role=request.form.get("role").upper(),
+        url="http://127.0.0.1:5000/"
+    )
+    mail.send(msg)
+    return redirect("/admin")
 
 
 @api.route("/api/patient/add", methods=["POST"])
@@ -84,6 +110,7 @@ def patient_add_api():
     db.session.commit()
     return redirect(request.referrer)
 
+
 @api.route("/api/patient/<patient_id>", methods=["POST"])
 @login_required
 def patient_edit_api(patient_id):
@@ -91,15 +118,16 @@ def patient_edit_api(patient_id):
     # pylint: disable=no-member
     db.session.begin()
     patient = Patient.query.filter_by(id=patient_id).first()
-    patient.first_name=request.form.get("first_name")
-    patient.last_name=request.form.get("last_name")
-    patient.email=request.form.get("email")
-    patient.date_of_birth=request.form.get("date_of_birth")
-    patient.insurance_number=request.form.get("insurance_number")
-    patient.govt_id=request.form.get("govt_id")
+    patient.first_name = request.form.get("first_name")
+    patient.last_name = request.form.get("last_name")
+    patient.email = request.form.get("email")
+    patient.date_of_birth = request.form.get("date_of_birth")
+    patient.insurance_number = request.form.get("insurance_number")
+    patient.govt_id = request.form.get("govt_id")
     print(patient, flush=True)
     db.session.commit()
     return redirect(url_for("pages.health_home_page"))
+
 
 @api.route("/api/user/<user_id>", methods=["POST"])
 @login_required
@@ -108,13 +136,14 @@ def user_edit_api(user_id):
     # pylint: disable=no-member
     db.session.begin()
     user = User.query.filter_by(id=user_id).first()
-    user.first_name=request.form.get("first_name")
-    user.last_name=request.form.get("last_name")
-    user.email=request.form.get("email")
-    user.password=request.form.get("password")
-    user.role=request.form.get("role").upper()
+    user.first_name = request.form.get("first_name")
+    user.last_name = request.form.get("last_name")
+    user.email = request.form.get("email")
+    user.password = request.form.get("password")
+    user.role = request.form.get("role").upper()
     db.session.commit()
     return redirect(url_for("pages.admin_page"))
+
 
 @api.route("/api/appt/add", methods=["POST"])
 @login_required
@@ -132,6 +161,7 @@ def appt_add_api():
     db.session.commit()
     return redirect(request.referrer)
 
+
 @api.route("/api/report/<appointment_id>", methods=["POST"])
 @login_required
 def report_api(appointment_id):
@@ -145,7 +175,7 @@ def report_api(appointment_id):
         patient_id=appt.patient.id,
         doctor_id=appt.doctor.id,
         comment=request.form.get("comment"),
-        appointment_id=appointment_id
+        appointment_id=appointment_id,
     )
     prescription = Prescription(
         patient_id=appt.patient.id,

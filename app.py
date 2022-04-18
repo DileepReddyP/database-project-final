@@ -8,18 +8,9 @@ from flask_login import LoginManager
 # from scripts.models import db, User
 from server.pages import pages
 from server.models import User, db
-from server.api import api
+from server.api import api, mail
 
 load_dotenv(find_dotenv())
-
-mail_settings = {
-    "MAIL_SERVER": "smtp.gmail.com",
-    "MAIL_PORT": 465,
-    "MAIL_USE_TLS": False,
-    "MAIL_USE_SSL": True,
-    "MAIL_USERNAME": getenv("EMAIL_USER"),
-    "MAIL_PASSWORD": getenv("EMAIL_PASSWORD"),
-}
 
 
 app = Flask(__name__)
@@ -33,7 +24,13 @@ app.config["SQLALCHEMY_DATABASE_URI"] = getenv("DATABASE_URL").replace(
 # Gets rid of a warning
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 app.secret_key = getenv("SECRET_KEY")
-app.config.update(mail_settings)
+
+app.config['MAIL_SERVER']='smtp.mailtrap.io'
+app.config['MAIL_PORT'] = 2525
+app.config['MAIL_USERNAME'] = 'af5a89c6413b6c'
+app.config['MAIL_PASSWORD'] = '66a6b981eeb4fb'
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
 
 app.register_blueprint(pages)
 app.register_blueprint(api)
@@ -64,6 +61,7 @@ def load_user(user_id):
 
 
 db.init_app(app)
+mail.init_app(app)
 
 with app.app_context():
     db.create_all()
