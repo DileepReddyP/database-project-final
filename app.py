@@ -1,5 +1,5 @@
 from os import getenv
-from flask import Flask, redirect, render_template
+from flask import Flask, redirect
 from werkzeug.exceptions import HTTPException
 from dotenv import find_dotenv, load_dotenv
 from flask_login import LoginManager
@@ -27,8 +27,8 @@ app.secret_key = getenv("SECRET_KEY")
 
 app.config['MAIL_SERVER']='smtp.mailtrap.io'
 app.config['MAIL_PORT'] = 2525
-app.config['MAIL_USERNAME'] = 'af5a89c6413b6c'
-app.config['MAIL_PASSWORD'] = '66a6b981eeb4fb'
+app.config['MAIL_USERNAME'] = getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = getenv("MAIL_PASSWORD")
 app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USE_SSL'] = False
 
