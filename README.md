@@ -6,15 +6,15 @@ Sample logins:
 
 ADMIN View:
 
-Username 	admin@modelhospital.com
-Password 	SXY3BVZC
+- Username: 	admin@modelhospital.com
+- Password: 	SXY3BVZC
 
 Nurse View:
 
-Username 	klee@email.com
-Password 	X8CNB8EZ
+- Username: 	klee@email.com
+- Password: 	X8CNB8EZ
 
 Doctor View:
 
-Username 	ismaelfw@email.com
-Password 	WFZGOOM9
+- Username: 	ismaelfw@email.com
+- Password: 	WFZGOOM9
